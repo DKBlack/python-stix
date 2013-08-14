@@ -20,8 +20,14 @@ class InformationSource(stix.Entity):
         self.tools = tools
         #self.references = []
     
+    def __nonzero__(self):
+        return bool(self.identity or self.time or self.tools)
+    
     @property
     def identity(self):
+        if self._identity is None:
+            self._identity = Identity()
+            
         return self._identity
     
     @identity.setter
@@ -33,6 +39,9 @@ class InformationSource(stix.Entity):
     
     @property
     def time(self):
+        if self._time is None:
+            self._time = Time()
+            
         return self._time
     
     @time.setter
@@ -44,6 +53,9 @@ class InformationSource(stix.Entity):
         
     @property
     def tools(self):
+        if self._tools is None:
+            self._tools = ToolInformationList()
+            
         return self._tools
     
     @tools.setter

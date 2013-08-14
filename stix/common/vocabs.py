@@ -20,6 +20,9 @@ class VocabString(stix.Entity):
         self.vocab_name = None
         self.vocab_reference = None
 
+    def __nonzero__(self):
+        return bool(self.value)
+
     def __str__(self):
         return str(self.value)
 

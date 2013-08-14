@@ -11,6 +11,9 @@ class StructuredText(stix.Entity):
         self.value = value
         self.structuring_format = None
 
+    def __nonzero__(self):
+        return bool(self.value or self.structuring_format)
+
     def to_obj(self):
         text_obj = common_binding.StructuredTextType()
 

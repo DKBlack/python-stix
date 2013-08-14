@@ -15,6 +15,9 @@ class Identity(stix.Entity):
         self.name = name
         #self.related_identities = related_identities
 
+    def __nonzero__(self):
+        return bool(self.idref_ or self.name)
+
     @property
     def name(self):
         return self._name

@@ -28,8 +28,14 @@ class STIXPackage(stix.Entity):
         self.observables = observables
         self.stix_header = stix_header
     
+    def __nonzero__(self):
+        return bool(self.idref_ or self.indicators or self.observables or self.stix_header)
+    
     @property
     def stix_header(self):
+        if self._stix_header is None:
+            self._stix_header = STIXHeader()
+            
         return self._stix_header
     
     @stix_header.setter
@@ -41,6 +47,9 @@ class STIXPackage(stix.Entity):
     
     @property
     def indicators(self):
+        if not self._indicators:
+            self._indicators = []
+            
         return self._indicators
     
     @indicators.setter
@@ -53,6 +62,9 @@ class STIXPackage(stix.Entity):
     
     @property
     def observables(self):
+        if not self._observables:
+            self._observables = Observables()
+            
         return self._observables
     
     @observables.setter

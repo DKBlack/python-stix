@@ -15,16 +15,23 @@ class IndicatorType(VocabString):
 
 
 class Indicator(stix.Entity):
-    def __init__(self, id_=None, title=None, description=None, indicator_type=None, producer=None, observables=None):
+    def __init__(self, id_=None, idref_=None, title=None, description=None, indicator_type=None, producer=None, observables=None):
         self.id_ = id_ if id_ is not None else stix.utils.create_id()
+        self.idref_ = idref_
         self.producer = producer
         self.observables = observables
         self.title = title
         self.description = description
         self.indicator_type = indicator_type
         
+    def __nonzero__(self):
+        return bool(self.idref_ or self.producer or self.observables or self.title or self.description)    
+    
     @property
     def description(self):
+        if self._description is None:
+            self._description = StructuredText()
+            
         return self._description
     
     @description.setter
@@ -39,6 +46,9 @@ class Indicator(stix.Entity):
             
     @property
     def producer(self):
+        if self._producer is None:
+            self._producer = InformationSource()
+            
         return self._producer
     
     @producer.setter
@@ -62,6 +72,9 @@ class Indicator(stix.Entity):
   
     @property
     def indicator_type(self):
+        if self._indicator_type is None:
+            self._indicator_type = IndicatorType()
+            
         return self._indicator_type
 
     @indicator_type.setter

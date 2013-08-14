@@ -19,8 +19,17 @@ class STIXHeader(stix.Entity):
         #self.handling = handling # not implemented
         self.information_source = information_source
 
+    def __nonzero__(self):
+        return bool(self.package_intent or 
+                self.title or
+                self.description or
+                self.information_source)
+
     @property
     def description(self):
+        if self._description is None:
+            self._description = StructuredText()
+        
         return self._description
 
     @description.setter
@@ -45,6 +54,9 @@ class STIXHeader(stix.Entity):
 
     @property
     def package_intent(self):
+        if self._package_intent is None:
+            self._package_intent = PackageIntent()
+        
         return self._package_intent
 
     @package_intent.setter
@@ -56,6 +68,9 @@ class STIXHeader(stix.Entity):
 
     @property
     def information_source(self):
+        if self._information_source is None:
+            self._information_source = InformationSource()
+            
         return self._information_source
 
     @information_source.setter
@@ -112,7 +127,7 @@ class STIXHeader(stix.Entity):
         desc_dict = dict_repr.get('description')
         return_obj.description = StructuredText.from_dict(desc_dict)
 
-        info_dict = dict_repr.get('information_source', None)
+        info_dict = dict_repr.get('information_source')
         return_obj.information_source = InformationSource.from_dict(info_dict)
 
         return return_obj

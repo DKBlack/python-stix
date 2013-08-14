@@ -29,8 +29,14 @@ class CIQIdentity3_0Instance(Identity):
         self.roles = roles
         self.specification = specification if specification else STIXCIQIdentity3_0()
     
+    def __nonzero__(self):
+        return bool(self.roles or self.specification)
+    
     @property
     def roles(self):
+        if self._roles is None:
+            self._roles = []
+            
         return self._roles
     
     @roles.setter
@@ -49,6 +55,9 @@ class CIQIdentity3_0Instance(Identity):
             
     @property
     def specification(self):
+        if self._specification is None:
+            self._specification = STIXCIQIdentity3_0()
+            
         return self._specification
     
     @specification.setter
@@ -137,17 +146,20 @@ class CIQIdentity3_0Instance(Identity):
             
         return return_obj
 
-    
-    
-    
 class STIXCIQIdentity3_0(stix.Entity):
     XML_TAG = "{%s}Specification" % XML_NS_STIX_EXT
     
     def __init__(self, party_name=None):
         self.party_name = party_name if party_name else PartyName()
-        
+    
+    def __nonzero__(self):
+        return bool(self.party_name)
+    
     @property
     def party_name(self):
+        if self._party_name is None:
+            self._party_name = PartyName()
+            
         return self._party_name
     
     @party_name.setter
@@ -215,7 +227,10 @@ class PartyName(stix.Entity):
         self.name_lines = []
         self.person_names = []
         self.organisation_names = []
-        
+    
+    def __nonzero__(self):
+        return bool(self.name_lines or self.person_names or self.organisation_names)
+    
 
     def add_name_line(self, value):
         if isinstance(value, basestring):
@@ -335,6 +350,9 @@ class NameLine(stix.Entity):
         self.value = value
         self.type = type_
     
+    def __nonzero__(self):
+        return bool(self.value)
+    
     @property
     def value(self):
         return self._value    
@@ -408,6 +426,8 @@ class PersonName(stix.Entity):
             for name_element in name_elements:
                 self.add_name_element(name_element)
 
+    def __nonzero__(self):
+        return bool(self.name_elements)
 
     def add_name_element(self, value):
         if not isinstance(value, PersonNameElement):
@@ -483,7 +503,9 @@ class OrganisationName(stix.Entity):
         if sub_division_names:
             for name in sub_division_names:
                 self.add_subdivision_name(name)
-        
+    
+    def __nonzero__(self):
+        return bool(self.name_elements or self.subdivision_names)
     
     def add_organisation_name_element(self, value):
         if not isinstance(value, OrganisationNameElement):
@@ -573,6 +595,9 @@ class NameElement(stix.Entity):
     def __init__(self, value=None):
         self.value = value
 
+    def __nonzero__(self):
+        return bool(self.value)
+
     @property
     def value(self):
         return self._value
@@ -624,7 +649,9 @@ class PersonNameElement(NameElement):
     def __init__(self, value=None, element_type=None):
         super(PersonNameElement, self).__init__(value)
         self.element_type = element_type
-        
+    
+    def __nonzero__(self):
+        return bool(self.value)
     
     @property
     def element_type(self):
@@ -699,7 +726,10 @@ class OrganisationNameElement(NameElement):
     def __init__(self, value=None, element_type=None):
         super(OrganisationNameElement, self).__init__(value)
         self.element_type = element_type
-        
+    
+    def __nonzero__(self):
+        return bool(self.value)
+    
     @property
     def element_type(self):
         return self._element_type
@@ -777,6 +807,9 @@ class SubDivisionName(stix.Entity):
     def __init__(self, value=None, type_=None):
         self.value = value
         self.type = type_
+    
+    def __nonzero__(self):
+        return bool(self.value)
     
     @property
     def type(self):
